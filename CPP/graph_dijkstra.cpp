@@ -1,11 +1,49 @@
 #include "iostream"
 #include "vector"
+#define INF 10000
 
 using namespace std;
 
-void dijkstra(vector<list<int> > &graph){
+void dijkstra(vector< vector<int> > &graph, int n_vertex){
 
+	vector<int> visited(n_vertex,0);
+	vector<int> weight(n_vertex,INF);
+	vector<int> parent(n_vertex,-1);
+	int new_wgt,min_wgt,loc=0,curr_v = 0;
 
+// by starting from 0 node	
+	weight[0] = 0;
+
+	while(curr_v != -1){
+		visited[curr_v] = 1;
+		// updating weight for curr_v not-visited neighbours
+		for(int i = 0; i<graph[curr_v].size(); i++){
+			if(visited[i]==0 && graph[curr_v][i] != 0){
+				// As weight[i] = min(weight[i],weight[0]+graph[curr_v][i])
+				new_wgt = weight[curr_v] + graph[curr_v][i];
+				if (weight[i] > new_wgt){
+	
+					weight[i] = new_wgt;
+					parent[i] = curr_v;	
+				}
+			}
+		}
+
+		// finding location for next min vertex location
+		min_wgt = INF;
+		loc = -1;
+		for(int i=0; i<n_vertex; i++){
+			if(visited[i] != 1 && weight[i]<min_wgt){
+				min_wgt = weight[i];
+				loc = i;
+			}
+		}
+		// updating location
+		curr_v = loc;
+	}
+	cout<<"***WEIGHTS***\n";
+	for(int i = 0; i<n_vertex; i++)
+		cout<<i<<" W =>"<<weight[i]<<" P => "<<parent[i]<<"\n";
 }
 
 int main()
@@ -32,17 +70,18 @@ int main()
 		graph[v_end][v_start] = edge_wgt;
 	}
 
+	cout<<"***Adjacency Matrix***\n";
 	for (int i = 0; i < n_vertex; ++i)
 	{
-		for (int j = 0; j < n_edge; ++j)
+		for (int j = 0; j < n_vertex; ++j)
 		{
+
 			cout<<graph[i][j]<<" ";
 		}
 		cout<<"\n";
 	}
 
-
-	// dijkstra(graph);
+	dijkstra(graph,n_vertex);
 
 	return 0;
 }
